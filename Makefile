@@ -1,4 +1,4 @@
-VERSION = 0.9
+VERSION = 0.9-jess
 
 CC      ?= gcc
 LIBS     = -lm -lxcb -lxcb-util -lxcb-icccm -lxcb-ewmh -lxcb-randr -lxcb-xinerama

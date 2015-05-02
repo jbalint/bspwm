@@ -363,8 +363,21 @@ bool update_monitors(void)
 						mm = add_monitor(rect);
 						char *name = (char *)xcb_randr_get_output_info_name(info);
 						size_t name_len = MIN(sizeof(mm->name), (size_t)xcb_randr_get_output_info_name_length(info) + 1);
-						snprintf(mm->name, name_len, "%s", name);
-						mm->id = outputs[i];
+						if (!strcmp(name, "HDMI1")) {
+						  snprintf(mm->name, 8, "%s", "HDMI1-A");
+						  mm->rectangle.width = 2000;
+						  mm->id = outputs[i];
+						  warn("%s orig x: %d\n", mm->name, mm->rectangle.x);
+						  /* add the second (virtual) monitor here */
+						  mm = add_monitor(rect);
+						  snprintf(mm->name, 8, "%s", "HDMI1-B");
+						  mm->id = outputs[i];
+						  mm->rectangle.width = 560;
+						  mm->rectangle.x = 1080+2000;
+						} else {
+						  snprintf(mm->name, name_len, "%s", name);
+						  mm->id = outputs[i];
+						}
 						PRINTF("add monitor %s (0x%X)\n", mm->name, mm->id);
 					}
 				}
