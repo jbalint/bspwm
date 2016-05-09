@@ -329,6 +329,7 @@ bool update_monitors(void)
 	xcb_randr_get_screen_resources_current_reply_t *sres = xcb_randr_get_screen_resources_current_reply(dpy, xcb_randr_get_screen_resources_current(dpy, root), NULL);
 	if (sres == NULL)
 		return false;
+	PRINTF("UPDATE monitors: %d\n", 42);
 
 	monitor_t *m, *mm = NULL;
 
@@ -351,29 +352,29 @@ bool update_monitors(void)
 					xcb_rectangle_t rect = (xcb_rectangle_t) {cir->x, cir->y, cir->width, cir->height};
 					mm = get_monitor_by_id(outputs[i]);
 					if (mm != NULL) {
-						mm->rectangle = rect;
-						update_root(mm);
-						for (desktop_t *d = mm->desk_head; d != NULL; d = d->next)
-							for (node_t *n = first_extrema(d->root); n != NULL; n = next_leaf(n, d->root))
-								translate_client(mm, mm, n->client);
-						arrange(mm, mm->desk);
-						mm->wired = true;
+						/* mm->rectangle = rect; */
+						/* update_root(mm); */
+						/* for (desktop_t *d = mm->desk_head; d != NULL; d = d->next) */
+						/* 	for (node_t *n = first_extrema(d->root); n != NULL; n = next_leaf(n, d->root)) */
+						/* 		translate_client(mm, mm, n->client); */
+						/* arrange(mm, mm->desk); */
+						/* mm->wired = true; */
 						PRINTF("update monitor %s (0x%X)\n", mm->name, mm->id);
 					} else {
 						mm = add_monitor(rect);
 						char *name = (char *)xcb_randr_get_output_info_name(info);
 						size_t name_len = MIN(sizeof(mm->name), (size_t)xcb_randr_get_output_info_name_length(info) + 1);
-						if (!strcmp(name, "HDMI1")) {
-						  snprintf(mm->name, 8, "%s", "HDMI1-A");
-						  mm->rectangle.width = 2000;
+						if (!strcmp(name, "DP2")) {
+						  snprintf(mm->name, 8, "%s", "DP2-A");
+						  mm->rectangle.width = 1900;
 						  mm->id = outputs[i];
 						  warn("%s orig x: %d\n", mm->name, mm->rectangle.x);
 						  /* add the second (virtual) monitor here */
 						  mm = add_monitor(rect);
-						  snprintf(mm->name, 8, "%s", "HDMI1-B");
+						  snprintf(mm->name, 8, "%s", "DP2-B");
 						  mm->id = outputs[i];
-						  mm->rectangle.width = 560;
-						  mm->rectangle.x = 1080+2000;
+						  mm->rectangle.width = 660;
+						  mm->rectangle.x = /*1080+*/1900;
 						} else {
 						  snprintf(mm->name, name_len, "%s", name);
 						  mm->id = outputs[i];
